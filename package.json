@@ -1,0 +1,22 @@
+{
+  "name": "sqlhwk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayaneey/Employee-Tracker-SQL.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ayaneey/Employee-Tracker-SQL/issues"
+  },
+  "homepage": "https://github.com/ayaneey/Employee-Tracker-SQL#readme",
+  "dependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
