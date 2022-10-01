@@ -1,7 +1,10 @@
 const db = require("./db/connection");
+const express = require("express");
+const inquirer = require("inquirer");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+
 
 // Express middleware
 
@@ -17,6 +20,7 @@ function startQuestions(){
         choices: ['view all employees', 'view all departments']
     }]).then(answer => {
         console.log(answer);
+        switch_actions(answer.options_selected)
     })
 }
 
@@ -24,6 +28,8 @@ function startQuestions(){
 function switch_actions(option){
     switch(option){
         case 'view all employees':
+        console.log(option);
+        console.log("inside view all employee option");
         getAllEmployees();
         break;
 
@@ -34,14 +40,17 @@ function switch_actions(option){
 }
 
 
-async function getAllEmployees(){
+ function getAllEmployees(){
 
-    let employee_details = await db.query("select * from employees") // query the database
+    let employee_details = db.query("select * from employee",(data)=>{
+        console.log(data)
+    }) // query the database
+    // console.log(employee_details)
 }
 
 startQuestions()
 
 
-app.list(PORT, () => {
-    //console.log(`Server running on port ${PORT}`)
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
 })
