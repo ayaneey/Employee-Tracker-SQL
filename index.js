@@ -2,6 +2,7 @@ const db = require("./db/connection");
 const express = require("express");
 const inquirer = require("inquirer");
 
+const consoletable = require("console.table");
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -42,8 +43,9 @@ function switch_actions(option){
 
  function getAllEmployees(){
 
-    let employee_details = db.query("select * from employee",(data)=>{
+    let employee_details = db.query("select * from employee",(err, data)=>{
         console.log(data)
+        console.table(data)
     }) // query the database
     // console.log(employee_details)
 }
