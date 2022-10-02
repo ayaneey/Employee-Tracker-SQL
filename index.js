@@ -24,6 +24,9 @@ function startQuestions() {
           "view all roles",
           "view all employees",
           "Add a department",
+          "Add a role",
+         "Add an employee",
+
         ],
       },
     ])
@@ -57,7 +60,7 @@ function switch_actions(option) {
       break;
 
     case "Add a role":
-      addRole();
+      roleQuestions();
       break;
 
     case "Add an employee":
@@ -83,13 +86,83 @@ function departmentQuestion() {
 
 // Function is inserting data into the department table
 function addDepartment(dept_name) {
+console.log(dept_name);
   db.query(
-    `INSERT INTO department (name) VALUES (${dept_name})`,
+    `INSERT INTO department (name) VALUES ("${dept_name}")`, // added "" so it returns a string instead
     (err, data) => {
+    if(err) console.log(err);
       console.log(data);
       startQuestions();
     }
   );
+}
+
+function employeeQuestions(){
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Add the first name of the employee",
+            name: "emp_firstName",
+        },
+        {
+            type: "input",
+            message: "Add the last name of the employee",
+            name: "emp_lastName",
+        },
+        {
+            type: "input",
+            message: "Add the role of the employee",
+            name: "emp_role",
+        },
+        {
+            type: "input",
+            message: "Add the manager id of the employee",
+            name: "emp_manager",
+        }
+    ]).then((answer) => {
+        addEmployee(answer.emp_firstName, answer.emp_lastName, answer.emp_role, answer.emp_manager);
+    })
+}
+
+// Function inserting data into the employee table
+function addEmployee(first_name, last_name, role_id, manager_id){
+db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${first_name}", "${last_name}", ${role_id}, ${manager_id})`,(err, data) => {
+    if(err) console.log(err);
+    console.log(data);
+    startQuestions();
+}
+);
+}
+
+function roleQuestions(){
+inquirer.prompt([
+    {
+        type: "input",
+        message: "Add the name of the role",
+        name: "role_name",
+    },
+    {
+        type: "input",
+        message: "Add the salary",
+        name: "role_salary",
+    },
+    {
+        type: "input",
+        message: "Add the department id",
+        name: "department_id",
+    }
+]).then((answer) => {
+    addRole(answer.role_name, answer.role_salary, answer.department_id);
+}
+)}
+
+// Function inserting data into the role table
+function addRole(title, salary, department_id){
+    db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${title}", ${salary}, ${department_id})`, (err, data) => {
+        if(err) console.log(err);
+        console.log(data);
+        startQuestions();
+    });
 }
 
 /* ---------------- retrieving department data ---------------- */
