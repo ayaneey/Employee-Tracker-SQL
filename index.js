@@ -64,12 +64,12 @@ function switch_actions(option) {
       break;
 
     case "Add an employee":
-      addEmployee();
+      employeeQuestions();
       break;
   }
 }
 
-// Generating user input
+// Generating user input for department
 function departmentQuestion() {
   inquirer
     .prompt([
@@ -97,6 +97,7 @@ console.log(dept_name);
   );
 }
 
+// Generating user input for employee
 function employeeQuestions(){
     inquirer.prompt([
         {
@@ -134,6 +135,7 @@ db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALU
 );
 }
 
+// Generating user input for role
 function roleQuestions(){
 inquirer.prompt([
     {
