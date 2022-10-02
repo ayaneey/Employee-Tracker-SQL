@@ -2,7 +2,9 @@ const db = require("./db/connection");
 const express = require("express");
 const inquirer = require("inquirer");
 
-const consoletable = require("console.table");
+const consoleTable = require("console.table");
+const { deflate } = require("zlib");
+const { finished } = require("stream");
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -25,10 +27,9 @@ function startQuestions() {
           "view all employees",
           "Add a department",
           "Add a role",
-         "Add an employee",
-         "Update employee",
-         "Finish",
-
+          "Add an employee",
+          "Update employee",
+          "Finish",
         ],
       },
     ])
@@ -68,6 +69,12 @@ function switch_actions(option) {
     case "Add an employee":
       employeeQuestions();
       break;
+
+    case "Update an employee":
+      updateEmployeeRole();
+      break;
+    default:
+      finish();
   }
 }
 
@@ -88,11 +95,11 @@ function departmentQuestion() {
 
 // Function is inserting data into the department table
 function addDepartment(dept_name) {
-console.log(dept_name);
+  console.log(dept_name);
   db.query(
     `INSERT INTO department (name) VALUES ("${dept_name}")`, // added "" so it returns as a string and not a value!
     (err, data) => {
-    if(err) console.log(err);
+      if (err) console.log(err);
       console.log(data);
       startQuestions();
     }
@@ -100,92 +107,111 @@ console.log(dept_name);
 }
 
 // Generating user input for employee
-function employeeQuestions(){
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "Add the first name of the employee",
-            name: "emp_firstName",
-        },
-        {
-            type: "input",
-            message: "Add the last name of the employee",
-            name: "emp_lastName",
-        },
-        {
-            type: "input",
-            message: "Add the role of the employee",
-            name: "emp_role",
-        },
-        {
-            type: "input",
-            message: "Add the manager id of the employee",
-            name: "emp_manager",
-        }
-    ]).then((answer) => {
-        addEmployee(answer.emp_firstName, answer.emp_lastName, answer.emp_role, answer.emp_manager);
-    })
+function employeeQuestions() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Add the first name of the employee",
+        name: "emp_firstName",
+      },
+      {
+        type: "input",
+        message: "Add the last name of the employee",
+        name: "emp_lastName",
+      },
+      {
+        type: "input",
+        message: "Add the role of the employee",
+        name: "emp_role",
+      },
+      {
+        type: "input",
+        message: "Add the manager id of the employee",
+        name: "emp_manager",
+      },
+    ])
+    .then((answer) => {
+      addEmployee(
+        answer.emp_firstName,
+        answer.emp_lastName,
+        answer.emp_role,
+        answer.emp_manager
+      );
+    });
 }
 
 // Function inserting data into the employee table
-function addEmployee(first_name, last_name, role_id, manager_id){
-db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${first_name}", "${last_name}", ${role_id}, ${manager_id})`,(err, data) => {
-    if(err) console.log(err);
-    console.log(data);
-    startQuestions();
-}
-);
+function addEmployee(first_name, last_name, role_id, manager_id) {
+  db.query(
+    `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${first_name}", "${last_name}", ${role_id}, ${manager_id})`,
+    (err, data) => {
+      if (err) console.log(err);
+      console.log(data);
+      startQuestions();
+    }
+  );
 }
 
 /* -------------------------------- choose to update employee role-------------------------------- */
-function updateEmployeeRole(){
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "Please select employee you want to update:",
-            name: "emp_update",
-        },
-        {
-            type: "input",
-            message: "What is the updated role of the employee?",
-            name: "update_emp",
-        }
-    ]).then((answer) => {
-        
-    })
-}
+function updateEmployeeRole() {
+db.query("select * from department", (err, data) => {
+if (err) console.log(err);
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Please select employee you want to update:",
+        name: "emp_update",
+      },
+      {
+        type: "input",
+        message: "What is the updated role of the employee?",
+        name: "update_emp",
+      },
+    ])
+    .then((answer) => {
+    updateEmployeeRole(answer.emp_update, answer.update_emp);
+    });
+},
+/* ---------------------------------------------------------------------------------------------- */
 
 // Generating user input for role
-function roleQuestions(){
-inquirer.prompt([
-    {
+function roleQuestions() {
+  inquirer
+    .prompt([
+      {
         type: "input",
         message: "Add the name of the role",
         name: "role_name",
-    },
-    {
+      },
+      {
         type: "input",
         message: "Add the salary",
         name: "role_salary",
-    },
-    {
+      },
+      {
         type: "input",
         message: "Add the department id",
         name: "department_id",
-    }
-]).then((answer) => {
-    addRole(answer.role_name, answer.role_salary, answer.department_id);
-}
-)}
+      },
+    ])
+    .then((answer) => {
+      addRole(answer.role_name, answer.role_salary, answer.department_id);
+    });
+},
 
 // Function inserting data into the role table
-function addRole(title, salary, department_id){
-    db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${title}", ${salary}, ${department_id})`, (err, data) => {
-        if(err) console.log(err);
-        console.log(data);
-        startQuestions();
-    });
-}
+function addRole(title, salary, department_id) {
+  db.query(
+    `INSERT INTO role (title, salary, department_id) VALUES ("${title}", ${salary}, ${department_id})`,
+    (err, data) => {
+      if (err) console.log(err);
+      console.log(data);
+      startQuestions();
+    }
+  );
+},
 
 /* ---------------- retrieving department data ---------------- */
 function getAllDepartments() {
@@ -194,7 +220,7 @@ function getAllDepartments() {
     console.table(data);
     startQuestions();
   }); // query the database
-}
+},
 
 /* ---------------- retrieving role data ---------------- */
 function getAllRoles() {
@@ -203,7 +229,7 @@ function getAllRoles() {
     console.table(data);
     startQuestions();
   }); // query the database
-}
+},
 
 /* ---------------- retrieving employee data ---------------- */
 function getAllEmployees() {
@@ -213,10 +239,10 @@ function getAllEmployees() {
     startQuestions(); // recalling the same function
   }); // query the database
   // console.log(employee_details)
-}
+},
 
-startQuestions();
+startQuestions(),
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});
+}))
