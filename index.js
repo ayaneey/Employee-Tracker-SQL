@@ -26,6 +26,8 @@ function startQuestions() {
           "Add a department",
           "Add a role",
          "Add an employee",
+         "Update employee",
+         "Finish",
 
         ],
       },
@@ -88,7 +90,7 @@ function departmentQuestion() {
 function addDepartment(dept_name) {
 console.log(dept_name);
   db.query(
-    `INSERT INTO department (name) VALUES ("${dept_name}")`, // added "" so it returns a string instead
+    `INSERT INTO department (name) VALUES ("${dept_name}")`, // added "" so it returns as a string and not a value!
     (err, data) => {
     if(err) console.log(err);
       console.log(data);
@@ -133,6 +135,24 @@ db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALU
     startQuestions();
 }
 );
+}
+
+/* -------------------------------- choose to update employee role-------------------------------- */
+function updateEmployeeRole(){
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Please select employee you want to update:",
+            name: "emp_update",
+        },
+        {
+            type: "input",
+            message: "What is the updated role of the employee?",
+            name: "update_emp",
+        }
+    ]).then((answer) => {
+        
+    })
 }
 
 // Generating user input for role
