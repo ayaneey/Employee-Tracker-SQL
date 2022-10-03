@@ -154,26 +154,26 @@ function addEmployee(first_name, last_name, role_id, manager_id) {
 }
 
 /* -------------------------------- choose to update employee role-------------------------------- */
-function updateEmployeeRole() {
-db.query("select * from department", (err, data) => {
-if (err) console.log(err);
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "Please select employee you want to update:",
-        name: "emp_update",
-      },
-      {
-        type: "input",
-        message: "What is the updated role of the employee?",
-        name: "update_emp",
-      },
-    ])
-    .then((answer) => {
-    updateEmployeeRole(answer.emp_update, answer.update_emp);
-    });
-},
+// function updateEmployeeRole() {
+// db.query("select * from department", (err, data) => {
+// if (err) console.log(err);
+//   inquirer
+//     .prompt([
+//       {
+//         type: "input",
+//         message: "Please select employee you want to update:",
+//         name: "emp_update",
+//       },
+//       {
+//         type: "input",
+//         message: "What is the updated role of the employee?",
+//         name: "update_emp",
+//       },
+//     ])
+//     .then((answer) => {
+//     updateEmployeeRole(answer.emp_update, answer.update_emp);
+//     });
+// },
 /* ---------------------------------------------------------------------------------------------- */
 
 // Generating user input for role
@@ -199,7 +199,7 @@ function roleQuestions() {
     .then((answer) => {
       addRole(answer.role_name, answer.role_salary, answer.department_id);
     });
-},
+}
 
 // Function inserting data into the role table
 function addRole(title, salary, department_id) {
@@ -211,7 +211,7 @@ function addRole(title, salary, department_id) {
       startQuestions();
     }
   );
-},
+}
 
 /* ---------------- retrieving department data ---------------- */
 function getAllDepartments() {
@@ -220,7 +220,7 @@ function getAllDepartments() {
     console.table(data);
     startQuestions();
   }); // query the database
-},
+}
 
 /* ---------------- retrieving role data ---------------- */
 function getAllRoles() {
@@ -229,7 +229,7 @@ function getAllRoles() {
     console.table(data);
     startQuestions();
   }); // query the database
-},
+}
 
 /* ---------------- retrieving employee data ---------------- */
 function getAllEmployees() {
@@ -239,10 +239,10 @@ function getAllEmployees() {
     startQuestions(); // recalling the same function
   }); // query the database
   // console.log(employee_details)
-},
+}
 
 startQuestions(),
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-}))
+})
