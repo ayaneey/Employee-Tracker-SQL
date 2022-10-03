@@ -70,11 +70,11 @@ function switch_actions(option) {
       employeeQuestions();
       break;
 
-    case "Update an employee":
+    case "Update employee":
       updateEmployeeRole();
       break;
     default:
-      finish();
+    //   finish();
   }
 }
 
@@ -154,26 +154,32 @@ function addEmployee(first_name, last_name, role_id, manager_id) {
 }
 
 /* -------------------------------- choose to update employee role-------------------------------- */
-// function updateEmployeeRole() {
-// db.query("select * from department", (err, data) => {
-// if (err) console.log(err);
-//   inquirer
-//     .prompt([
-//       {
-//         type: "input",
-//         message: "Please select employee you want to update:",
-//         name: "emp_update",
-//       },
-//       {
-//         type: "input",
-//         message: "What is the updated role of the employee?",
-//         name: "update_emp",
-//       },
-//     ])
-//     .then((answer) => {
-//     updateEmployeeRole(answer.emp_update, answer.update_emp);
-//     });
-// },
+
+function updateEmployeeRole() {
+    console.log("function running");
+    db.query("select * from department", (err, data) => {
+        if (err) console.log(err);
+        console.log(data);
+    }),
+    console.log("query ram");
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "Please select employee you want to update:",
+                name: "emp_update",
+            },
+            {
+                type: "input",
+                message: "What is the updated role of the employee?",
+                name: "update_emp",
+            },
+        ])
+        .then((answer) => {
+            console.log(answer.emp_update, answer.update_emp);
+            return
+        });
+}
 /* ---------------------------------------------------------------------------------------------- */
 
 // Generating user input for role
